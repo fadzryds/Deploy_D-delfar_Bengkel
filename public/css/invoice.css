@@ -1,0 +1,79 @@
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background: #f4f6f9;
+}
+
+.invoice-container {
+    max-width: 900px;
+    margin: 40px auto;
+    background: #fff;
+    padding: 30px;
+    border-radius: 14px;
+    box-shadow: 0 15px 40px rgba(0,0,0,.1);
+}
+
+.invoice-header {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 2px solid #ddd;
+    padding-bottom: 15px;
+}
+
+.invoice-info {
+    display: flex;
+    justify-content: space-between;
+    margin: 20px 0;
+}
+
+.invoice-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.invoice-table th {
+    width: 30%;
+    background: #7f1d1d;
+    color: #fff;
+    padding: 10px;
+}
+
+.invoice-table td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.invoice-total {
+    display: flex;
+    justify-content: space-between;
+    font-size: 22px;
+    font-weight: bold;
+    margin-top: 25px;
+}
+
+.invoice-footer {
+    margin-top: 25px;
+    text-align: right;
+}
+
+.badge {
+    padding: 8px 16px;
+    border-radius: 20px;
+    color: white;
+    font-weight: bold;
+}
+
+.badge.proses {
+    background: #facc15;
+    color: #000;
+}
+
+.badge.selesai {
+    background: #16a34a;
+}
+
+@media(max-width:768px) {
+    .invoice-info {
+        flex-direction: column;
+        gap: 12px;
+    }
+}
