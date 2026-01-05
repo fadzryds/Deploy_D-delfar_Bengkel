@@ -1,6 +1,5 @@
 FROM php:8.4-fpm
 
-# System dependencies
 RUN apt-get update && apt-get install -y \
     nginx \
     supervisor \
@@ -20,26 +19,20 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Set working directory
 WORKDIR /var/www/html
 
-# Install Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
-
-# Copy project files
 COPY . .
 
-# Install PHP dependencies
 RUN composer install --no-dev --optimize-autoloader
 
-# Laravel permissions
-RUN chown -R www-data:www-data storage bootstrap/cache \
+RUN mkdir -p /var/run/php \
+    && sed -i 's|listen = .*|listen = /var/run/php/php-fpm.sock|' /usr/local/etc/php-fpm.d/www.conf \
+    && chown -R www-data:www-data storage bootstrap/cache \
     && chmod -R 775 storage bootstrap/cache
 
-# Copy configs
 COPY docker/nginx.conf /etc/nginx/conf.d/default.conf
 COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 EXPOSE 8080
-
 CMD ["/usr/bin/supervisord", "-n"]
