@@ -1,6 +1,5 @@
 FROM php:8.4-apache
 
-# Install dependencies and PHP extensions
 RUN apt-get update && apt-get install -y \
     git \
     unzip \
@@ -20,10 +19,6 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# --- PENTING: Perbaiki Konflik MPM ---
-# Nonaktifkan mpm_event bawaan dan aktifkan mpm_prefork untuk kompatibilitas mod_php
-RUN a2dismod mpm_event && a2enmod mpm_prefork
-
 WORKDIR /var/www/html
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
@@ -33,13 +28,6 @@ RUN composer install --no-dev --optimize-autoloader
 
 RUN chown -R www-data:www-data storage bootstrap/cache
 
-# Modifikasi konfigurasi Apache untuk Laravel Public Directory
 RUN sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/sites-available/000-default.conf
 
-# --- Perbaikan Port untuk Railway ---
-# Ini memastikan Apache mendengarkan variabel lingkungan $PORT
-RUN echo "Listen \${PORT}" >> /etc/apache2/ports.conf
-ENV PORT 8000
-EXPOSE 8000
-
-# Container akan otomatis menjalankan apache2-foreground karena base image-nya
+EXPOSE 8080
