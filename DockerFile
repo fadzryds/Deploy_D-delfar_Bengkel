@@ -20,6 +20,10 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
+# --- PENTING: Perbaiki Konflik MPM ---
+# Nonaktifkan mpm_event bawaan dan aktifkan mpm_prefork untuk kompatibilitas mod_php
+RUN a2dismod mpm_event && a2enmod mpm_prefork
+
 WORKDIR /var/www/html
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
@@ -37,7 +41,3 @@ RUN sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/sites-available
 RUN echo "Listen \${PORT}" >> /etc/apache2/ports.conf
 ENV PORT 8000
 EXPOSE 8000
-
-# --- Perbaikan Crash MPM (PENTING) ---
-# Image default sudah pakai MPM event. Kita pastikan tidak ada modul lain yang aktif.
-# Kami tidak perlu melakukan perubahan di sini, cukup pastikan konfigurasi lain bersih.
