@@ -1,5 +1,6 @@
 FROM php:8.4-apache
 
+# Install dependencies and PHP extensions
 RUN apt-get update && apt-get install -y \
     git \
     unzip \
@@ -28,6 +29,15 @@ RUN composer install --no-dev --optimize-autoloader
 
 RUN chown -R www-data:www-data storage bootstrap/cache
 
+# Modifikasi konfigurasi Apache untuk Laravel Public Directory
 RUN sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/sites-available/000-default.conf
 
-EXPOSE 8080
+# --- Bagian Baru Penting untuk Railway ---
+
+# 1. Pastikan Apache mendengarkan variabel lingkungan $PORT
+# Ini menggantikan port 80 default dengan nilai dinamis dari Railway
+RUN echo "Listen \${PORT}" >> /etc/apache2/ports.conf
+
+# 2. Tetapkan variabel lingkungan PORT default jika tidak ada (opsional, untuk testing lokal)
+ENV PORT 8000
+EXPOSE 8000
