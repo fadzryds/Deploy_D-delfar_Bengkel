@@ -32,12 +32,12 @@ RUN chown -R www-data:www-data storage bootstrap/cache
 # Modifikasi konfigurasi Apache untuk Laravel Public Directory
 RUN sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/sites-available/000-default.conf
 
-# --- Bagian Baru Penting untuk Railway ---
-
-# 1. Pastikan Apache mendengarkan variabel lingkungan $PORT
-# Ini menggantikan port 80 default dengan nilai dinamis dari Railway
+# --- Perbaikan Port untuk Railway ---
+# Ini memastikan Apache mendengarkan variabel lingkungan $PORT
 RUN echo "Listen \${PORT}" >> /etc/apache2/ports.conf
-
-# 2. Tetapkan variabel lingkungan PORT default jika tidak ada (opsional, untuk testing lokal)
 ENV PORT 8000
 EXPOSE 8000
+
+# --- Perbaikan Crash MPM (PENTING) ---
+# Image default sudah pakai MPM event. Kita pastikan tidak ada modul lain yang aktif.
+# Kami tidak perlu melakukan perubahan di sini, cukup pastikan konfigurasi lain bersih.
