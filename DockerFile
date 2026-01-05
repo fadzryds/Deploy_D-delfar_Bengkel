@@ -41,3 +41,5 @@ RUN sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/sites-available
 RUN echo "Listen \${PORT}" >> /etc/apache2/ports.conf
 ENV PORT 8000
 EXPOSE 8000
+
+# Container akan otomatis menjalankan apache2-foreground karena base image-nya
